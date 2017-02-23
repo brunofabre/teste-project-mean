@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="listaTelefonica">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista Telefonica</title>
+
+    <link rel="stylesheet" href="lib/bootstrap/bootstrap.min.css">
+    <style>
+        .jumbotron {
+            width: 400px;
+            text-align: center;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+        .table {
+            margin-top: 20px;
+        }
+        .form-control {
+            margin-bottom: 5px;
+        }
+    </style>
+
+    <script src="lib/angular/angular.min.js"></script>
+    <script>
+        angular.module('listaTelefonica', [])
+        angular.module('listaTelefonica').controller('listaTelefonicaCtrl', function($scope, $http, $timeout) {
+            $scope.app = "Lista Telefonica"
+
+            var carregarContatos = function() {
+                $http.get('http://localhost:3003/api/contacts').then(function (response) {
+                    $scope.contatos = response.data
+
+                    $timeout(carregarContatos, 100)
+                })
+            }
+
+            // $scope.contatos = [
+            //     {nome: 'Pedro', telefone: '99998888'},
+            //     {nome: 'Ana', telefone: '99998877'},
+            //     {nome: 'Maria', telefone: '99998866'},
+            // ]
+            $scope.adicionarContato = function(contato) {
+                $scope.contatos.push(angular.copy(contato))
+                delete $scope.contato
+            }
+
+            carregarContatos()
+        })
+    </script>
+</head>
+<body ng-controller="listaTelefonicaCtrl">
+    <div class="jumbotron">
+        <h3>{{app}}</h3>
+        <input class="form-control" type="text" ng-model="criterioBusca" placeholder="Busca">
+        <table class="table table-striped">
+            <tr>
+                <th>Nome</th>
+                <th>Idade</th>
+                <th>E-Mail</th>
+            </tr>
+            <tr ng-repeat="contato in contatos | filter:criterioBusca">
+                <td>{{contato.name}}</td>
+                <td>{{contato.age}}</td>
+                <td>{{contato.email}}</td>
+            </tr>
+        </table>
+        <hr>
+        <input class="form-control" type="text" ng-model="contato.nome" placeholder="Nome">
+        <input class="form-control" type="text" ng-model="contato.telefone" placeholder="Telefone">
+        <button class="btn btn-primary" ng-click="adicionarContato(contato)" ng-disabled="!contato.nome || !contato.telefone">Adicionar Contato</button>
+    </div>
+</body>
+</html>
