@@ -30,7 +30,7 @@
             $scope.app = "Lista Telefonica"
 
             var carregarContatos = function() {
-                $http.get('http://localhost:3003/api/contacts').then(function (response) {
+                $http.get('http://162.243.52.60:3003/api/contacts').then(function (response) {
                     $scope.contatos = response.data
 
                     $timeout(carregarContatos, 100)
